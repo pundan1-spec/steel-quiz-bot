@@ -218,6 +218,39 @@ app.post('/webhook', async (req, res) => {
   }
 });
 
+/* ------------------------------------------------- browser quiz (same bank)
+   Serves the page and three endpoints. A question goes out without its answer;
+   the answer is only returned once a choice has been submitted, so the page
+   source never contains it. */
+
+app.use(express.static('public'));
+
+app.get('/api/houses', (_req, res) => {
+  res.json({
+    houses: Object.fromEntries(Object.entries(HOUSES).map(([k, h]) => [k, { name: h.name, blurb: h.blurb }])),
+    totals: TOTALS
+  });
+});
+
+app.post('/api/next', (req, res) => {
+  const { house, level, seen } = req.body || {};
+  if (!HOUSES[house]) return res.status(400).json({ error: 'unknown house' });
+  const done = Array.isArray(seen) ? seen : [];
+  const unseen = BANK.questions.filter(q => q.house === house && !done.includes(q.id));
+  if (!unseen.length) return res.json({ done: true });
+  const atLevel = unseen.filter(q => q.level === (level === 2 ? 2 : 1));
+  const pool = atLevel.length ? atLevel : unseen;
+  const q = pool[Math.floor(Math.random() * pool.length)];
+  res.json({ id: q.id, level: q.level, question: q.question, options: q.options });  // no answer
+});
+
+app.post('/api/answer', (req, res) => {
+  const { id, choice } = req.body || {};
+  const q = BANK.questions.find(x => x.id === id);
+  if (!q) return res.status(404).json({ error: 'unknown question' });
+  res.json({ right: choice === q.correct, correct: q.correct, explanation: q.explanation });
+});
+
 app.get('/health', (_req, res) =>
   res.json({ ok: true, questions: BANK.questions.length, store: store.backend }));
 
