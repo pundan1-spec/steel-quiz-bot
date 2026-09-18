@@ -245,7 +245,6 @@ async function answer(q, choice){
     <div class="verdict ${res.right ? 'ok' : 'no'}">
       <div class="head">${res.right ? `Correct. +${POINTS[q.level]} points.` : `Not this time. The answer is ${res.correct}, ${esc(q.options[res.correct])}.`}</div>
       <p>${esc(res.explanation)}</p>
-      ${promoted ? '<p style="margin-top:8px"><em>Two in a row. Hard questions from here.</em></p>' : ''}
     </div>
     ${cleared ? gatePanel(cleared) : `
     <button class="btn" id="next">${round.asked >= ROUND ? 'See my score' : 'Next question'}</button>
