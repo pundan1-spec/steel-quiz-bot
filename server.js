@@ -82,7 +82,7 @@ async function answer(to, state, qid, choice) {
 
   const p = store.house(state, q.house);
   const right = choice === q.correct;
-  let promoted = false;
+  let cleared = 0;
 
   p.seen.push(q.id);
   p.answered += 1;
@@ -95,14 +95,17 @@ async function answer(to, state, qid, choice) {
     p.correct += 1;
     p.streak += 1;
     if (p.streak > p.best) p.best = p.streak;
-    if (p.level === 1 && p.streak >= M.PROMOTE_AFTER) { p.level = 2; p.streak = 0; promoted = true; }
+    if (p.streak >= M.PROMOTE_AFTER && p.level < M.TOP_LEVEL) {
+      cleared = p.level; p.level += 1; p.streak = 0;
+      if (p.level > (p.reached || 1)) p.reached = p.level;
+    }
   } else {
     p.streak = 0;
-    p.level = 1;
+    if (p.level > 1) p.level -= 1;                   // one tier down, not back to the start
   }
 
   await store.save(to, state);
-  await send(to, M.verdict(q, right, p, promoted, state.current.asked));
+  await send(to, M.verdict(q, right, p, cleared, state.current.asked));
 }
 
 async function finish(to, state, cleared) {
@@ -238,10 +241,20 @@ app.post('/api/next', (req, res) => {
   const done = Array.isArray(seen) ? seen : [];
   const unseen = BANK.questions.filter(q => q.house === house && !done.includes(q.id));
   if (!unseen.length) return res.json({ done: true });
-  const atLevel = unseen.filter(q => q.level === (level === 2 ? 2 : 1));
+  const want = [1, 2, 3].includes(level) ? level : 1;
+  const atLevel = unseen.filter(q => q.level === want);
   const pool = atLevel.length ? atLevel : unseen;
   const q = pool[Math.floor(Math.random() * pool.length)];
   res.json({ id: q.id, level: q.level, question: q.question, options: q.options });  // no answer
+});
+
+/* Lifeline: returns one option that is definitely wrong, never the right one.
+   A separate call so an unused lifeline reveals nothing. */
+app.post('/api/hint', (req, res) => {
+  const q = BANK.questions.find(x => x.id === (req.body || {}).id);
+  if (!q) return res.status(404).json({ error: 'unknown question' });
+  const wrong = ['A', 'B', 'C'].filter(k => k !== q.correct);
+  res.json({ drop: wrong[Math.floor(Math.random() * wrong.length)] });
 });
 
 app.post('/api/answer', (req, res) => {
