@@ -52,6 +52,7 @@
   .opt .k{color:var(--muted);font-weight:600;font-size:.85rem;min-width:14px}
   .opt.right{border-color:var(--zinc);background:#E7EFF4;border-width:2px}
   .opt.wrong{border-color:var(--oxide);background:#F6E9E4;border-width:2px}
+  .opt.dropped{opacity:.4;text-decoration:line-through;background:#E9ECE9}
   .verdict{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
   .verdict .head{font-weight:600;margin-bottom:6px}
   .verdict.ok .head{color:var(--zinc)}
@@ -71,6 +72,15 @@
   footer{margin-top:26px;font-size:.78rem;color:var(--muted);line-height:1.5}
   footer button{background:none;border:none;padding:0;font:inherit;color:var(--muted);
     text-decoration:underline;cursor:pointer}
+  .gauntlet{display:block;width:100%;text-align:left;cursor:pointer;background:var(--ink);
+    color:var(--panel);border:none;border-radius:var(--r);padding:15px 14px;margin-bottom:16px;
+    font:inherit;
+    background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 7px)}
+  .gauntlet:active{background:#2A3032}
+  .gauntlet h2{font-size:1.05rem}
+  .gauntlet .sub{color:#A9B2AE}
+  .gauntlet .pts{color:#A9B2AE;font-size:.85rem;font-weight:600}
+  .depth{font-size:3.2rem;font-weight:700;letter-spacing:-.03em;line-height:1}
   .credit{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
     font-size:.72rem;letter-spacing:.01em}
   button:focus-visible,a:focus-visible{outline:2px solid var(--zinc);outline-offset:2px}
@@ -102,13 +112,29 @@ const API = {
              method:'POST', headers:{'Content-Type':'application/json'},
              body: JSON.stringify({house, level, seen})
            }).then(r => r.json()),
+  hint:    (id) => fetch('/api/hint', {
+             method:'POST', headers:{'Content-Type':'application/json'},
+             body: JSON.stringify({id})
+           }).then(r => r.json()),
   answer:  (id, choice) => fetch('/api/answer', {
              method:'POST', headers:{'Content-Type':'application/json'},
              body: JSON.stringify({id, choice})
            }).then(r => r.json())
 };
 
-const POINTS = {1:10, 2:20}, ROUND = 10, PROMOTE = 2;
+const POINTS = {1:10, 2:20, 3:30}, ROUND = 10, PROMOTE = 2, TOP_LEVEL = 3;
+const LEVEL_NAME = {1:'easy', 2:'hard', 3:'expert'};
+
+/* Gauntlet: the multiplier is what keeps the run tightening after the
+   difficulty ladder tops out at question five. */
+const LIFELINE_AT = 8;
+/* Star rating, read the way a vehicle rating is read. */
+const STAR_AT = [3, 8, 15, 25, 40];                 // depth needed for 1..5 stars
+const starsFor = d => STAR_AT.filter(n => d >= n).length;
+const starGlyphs = d => { const n = starsFor(d); return '\u2605'.repeat(n) + '\u2606'.repeat(5 - n); };
+const nextStarAt = d => STAR_AT.find(n => d < n) || null;
+const multFor = d => 1 + Math.floor(d / 5) * 0.5;
+const showMult = m => (m % 1 ? m.toFixed(1) : m);
 
 const store = (() => {
   const KEY = 'steelquiz.v2';
@@ -116,6 +142,7 @@ const store = (() => {
   const read = () => { if (!mem) { try { mem = JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e){ mem = {}; } } return mem; };
   return {
     house(h){ const d = read(); if (!d[h]) d[h] = {points:0, answered:0, correct:0, level:1, best:0, seen:[]}; return d[h]; },
+    meta(){ const d = read(); if (!d._meta) d._meta = {gauntletBest:0, gauntletRuns:0, gauntletPoints:0}; return d._meta; },
     save(){ try { localStorage.setItem(KEY, JSON.stringify(mem)); } catch(e){} },
     clear(){ mem = {}; try { localStorage.removeItem(KEY); } catch(e){} }
   };
@@ -140,7 +167,7 @@ function renderHouses(){
   const rows = Object.entries(HOUSES).map(([key, h]) => {
     const p = store.house(key), t = TOTALS[key] || 0;
     const pct = t ? Math.round(p.seen.length / t * 100) : 0;
-    const state = p.answered ? `${p.points} points · level ${p.level}` : 'not started';
+    const state = p.answered ? `${p.points} pts · ${LEVEL_NAME[p.reached || p.level]}` : 'not started';
     return `<button class="house" data-h="${key}">
       <div class="row"><h2>${esc(h.name)}</h2><span class="pts">${state}</span></div>
       <div class="sub">${esc(h.blurb)}</div>
@@ -148,8 +175,18 @@ function renderHouses(){
       <div class="sub" style="margin-top:6px">${p.seen.length} of ${t} questions seen</div>
     </button>`;
   }).join('');
-  view.innerHTML = `<h2 style="margin-bottom:10px">Pick a house</h2>${rows}`;
+  const m = store.meta();
+  view.innerHTML = `
+    <button class="gauntlet" id="gauntlet">
+      <div class="row" style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+        <h2>Gauntlet</h2>
+        <span class="pts">${m.gauntletBest ? starGlyphs(m.gauntletBest) + ' best ' + m.gauntletBest : 'not attempted'}</span>
+      </div>
+      <div class="sub">All five houses, rising difficulty. One wrong answer ends the run.</div>
+    </button>
+    <h2 style="margin-bottom:10px">Or pick a house</h2>${rows}`;
   view.querySelectorAll('.house').forEach(b => b.onclick = () => start(b.dataset.h));
+  document.getElementById('gauntlet').onclick = startGauntlet;
 }
 
 function start(house){
@@ -168,7 +205,7 @@ async function serve(){
   if (q.done) return summary(true);
 
   view.innerHTML = `<div class="card">
-    <div class="tag"><b>${esc(HOUSES[round.house].name)}</b> · ${q.level === 1 ? 'easy' : 'hard'} · ${POINTS[q.level]} points</div>
+    <div class="tag"><b>${esc(HOUSES[round.house].name)}</b> · ${LEVEL_NAME[q.level]} · ${POINTS[q.level]} points</div>
     <div class="q">${esc(q.question)}</div>
     <div id="opts">${['A','B','C'].map(k =>
       `<button class="opt" data-k="${k}"><span class="k">${k}</span><span>${esc(q.options[k])}</span></button>`).join('')}</div>
@@ -190,12 +227,18 @@ async function answer(q, choice){
   });
 
   p.seen.push(q.id); p.answered += 1; round.asked += 1;
-  let promoted = false;
+  let cleared = 0;                                     // level just cleared, if any
   if (res.right){
     p.points += POINTS[q.level]; p.correct += 1; round.right += 1; round.streak += 1;
     if (round.streak > p.best) p.best = round.streak;
-    if (p.level === 1 && round.streak >= PROMOTE){ p.level = 2; round.streak = 0; promoted = true; }
-  } else { round.streak = 0; p.level = 1; }
+    if (round.streak >= PROMOTE && p.level < TOP_LEVEL){
+      cleared = p.level; p.level += 1; round.streak = 0;
+      if (p.level > (p.reached || 1)) p.reached = p.level;
+    }
+  } else {
+    round.streak = 0;
+    if (p.level > 1) p.level -= 1;                     // drop one tier, not back to the start
+  }
   store.save();
 
   document.getElementById('after').innerHTML = `
@@ -204,32 +247,265 @@ async function answer(q, choice){
       <p>${esc(res.explanation)}</p>
       ${promoted ? '<p style="margin-top:8px"><em>Two in a row. Hard questions from here.</em></p>' : ''}
     </div>
+    ${cleared ? gatePanel(cleared) : `
     <button class="btn" id="next">${round.asked >= ROUND ? 'See my score' : 'Next question'}</button>
-    <button class="btn ghost" id="stop">Stop and see my score</button>`;
+    <button class="btn ghost" id="stop">Stop and see my score</button>`}`;
   document.getElementById('next').onclick = serve;
   document.getElementById('stop').onclick = () => summary(false);
+  const sh = document.getElementById('gate-share');
+  if (sh) sh.href = 'https://wa.me/?text=' + encodeURIComponent(progressText());
+}
+
+/* Shown the moment a tier is cleared: say so, then let them choose. */
+function gatePanel(level){
+  const next = LEVEL_NAME[level + 1];
+  return `<div style="margin-top:16px;padding:14px;border:1px solid var(--zinc);border-radius:var(--r);background:#E7EFF4">
+      <div style="font-weight:600;margin-bottom:4px">${LEVEL_NAME[level][0].toUpperCase()}${LEVEL_NAME[level].slice(1)} level cleared</div>
+      <div class="sub">Two in a row. The ${next} questions are worth ${POINTS[level + 1]} points each.</div>
+    </div>
+    <button class="btn" id="next">Continue to ${next}</button>
+    <a class="btn share" id="gate-share" href="#">Share my progress</a>
+    <button class="btn ghost" id="stop">Stop and see my score</button>`;
+}
+
+/* Houses carry different totals, so the shared message lists them separately. */
+function progressText(){
+  const lines = ['*Steel Quiz progress*', ''];
+  let total = 0;
+  for (const [key, h] of Object.entries(HOUSES)){
+    const p = store.house(key);
+    if (!p.answered) continue;
+    total += p.points;
+    lines.push(`${h.name}: ${p.points} pts · ${p.correct}/${p.answered} · ${LEVEL_NAME[p.reached || p.level]} level`);
+  }
+  lines.push('', `Total ${total} points.`);
+  return lines.join('\n');
+}
+
+/* ------------------------------------------------------------------ gauntlet
+   Sudden death across all five houses. Depth is the score: how many you
+   answered before the first mistake. */
+
+let run = null;
+const HOUSE_KEYS = () => Object.keys(HOUSES);
+
+function startGauntlet(){
+  round = null;
+  const m = store.meta();
+  // Skip what you saw last run, and whatever ended it, so repeat attempts
+  // test judgement rather than recall.
+  const carry = (m.lastSeen || []).slice(-18);
+  if (m.lastKiller && !carry.includes(m.lastKiller)) carry.push(m.lastKiller);
+  run = {depth:0, points:0, level:1, streak:0, seen:carry.slice(), fresh:[], houses:{}, lifeline:false};
+  serveGauntlet();
+}
+
+async function serveGauntlet(){
+  const keys = HOUSE_KEYS();
+  const house = keys[Math.floor(Math.random() * keys.length)];
+  view.innerHTML = '<div class="card"><p class="sub">Loading question…</p></div>';
+  const q = await API.next(house, run.level, run.seen);
+  if (q.done) return gauntletOver(true);
+  q._house = house;
+
+  const mult = multFor(run.depth);
+  const canHelp = run.depth >= LIFELINE_AT && !run.lifeline;
+  view.innerHTML = `<div class="card">
+    <div class="tag"><b>Gauntlet</b> · ${esc(HOUSES[house].name)} · ${LEVEL_NAME[q.level]} · ${Math.round(POINTS[q.level] * mult)} points${mult > 1 ? ` (×${showMult(mult)})` : ''}</div>
+    <div class="q">${esc(q.question)}</div>
+    <div id="opts">${['A','B','C'].map(k =>
+      `<button class="opt" data-k="${k}"><span class="k">${k}</span><span>${esc(q.options[k])}</span></button>`).join('')}</div>
+    ${canHelp ? '<button class="btn ghost" id="life" style="margin-top:4px">Lifeline: drop one wrong answer</button>' : ''}
+    <div id="after"></div>
+  </div>
+  <div class="sub" style="margin-top:12px;text-align:center">Question ${run.depth + 1} · ${starGlyphs(run.depth)}${nextStarAt(run.depth) ? ` · next star at ${nextStarAt(run.depth)}` : ''}</div>`;
+  view.querySelectorAll('.opt').forEach(b => b.onclick = () => gauntletAnswer(q, b.dataset.k));
+  const life = document.getElementById('life');
+  if (life) life.onclick = async () => {
+    life.disabled = true; life.textContent = 'Thinking…';
+    try {
+      const {drop} = await API.hint(q.id);
+      const b = view.querySelector(`.opt[data-k="${drop}"]`);
+      b.classList.add('dropped'); b.disabled = true;
+      run.lifeline = true;
+      life.remove();
+    } catch (e) { life.disabled = false; life.textContent = 'Lifeline unavailable'; }
+  };
+}
+
+async function gauntletAnswer(q, choice){
+  view.querySelectorAll('.opt').forEach(b => b.disabled = true);
+  const res = await API.answer(q.id, choice);
+  view.querySelectorAll('.opt').forEach(b => {
+    if (b.dataset.k === res.correct) b.classList.add('right');
+    else if (b.dataset.k === choice) b.classList.add('wrong');
+  });
+  run.seen.push(q.id); run.fresh.push(q.id);
+  run.houses[q._house] = (run.houses[q._house] || 0) + (res.right ? 1 : 0);
+
+  if (!res.right){
+    run.killer = q.id;
+    document.getElementById('after').innerHTML = `
+      <div class="verdict no">
+        <div class="head">Run over. The answer is ${res.correct}, ${esc(q.options[res.correct])}.</div>
+        <p>${esc(res.explanation)}</p>
+      </div>`;
+    return setTimeout(() => gauntletOver(false, q, res), 60);
+  }
+
+  const gained = Math.round(POINTS[q.level] * multFor(run.depth));
+  run.depth += 1; run.points += gained; run.streak += 1;
+  let lifted = false;
+  if (run.streak >= PROMOTE && run.level < TOP_LEVEL){ run.level += 1; run.streak = 0; lifted = true; }
+  const climbed = multFor(run.depth) > multFor(run.depth - 1);
+
+  document.getElementById('after').innerHTML = `
+    <div class="verdict ok">
+      <div class="head">Still standing. ${run.depth} deep, +${gained} points.</div>
+      <p>${esc(res.explanation)}</p>
+      ${lifted ? `<p style="margin-top:8px"><em>Difficulty up: ${LEVEL_NAME[run.level]} questions now.</em></p>` : ''}
+      ${climbed ? `<p style="margin-top:8px"><em>Multiplier now ×${showMult(multFor(run.depth))}.</em></p>` : ''}
+      ${starsFor(run.depth) > starsFor(run.depth - 1) ? `<p style="margin-top:8px"><em>${starsFor(run.depth)} star${starsFor(run.depth) > 1 ? 's' : ''}. ${starGlyphs(run.depth)}</em></p>` : ''}
+      ${run.depth === LIFELINE_AT ? '<p style="margin-top:8px"><em>Lifeline unlocked: one wrong answer can be dropped.</em></p>' : ''}
+    </div>
+    <button class="btn" id="next">Keep going</button>
+    <button class="btn ghost" id="stopg">Walk away with ${run.points}</button>`;
+  document.getElementById('next').onclick = serveGauntlet;
+  document.getElementById('stopg').onclick = () => gauntletOver(false);
+  document.getElementById('after').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function gauntletOver(exhausted, q, res){
+  const m = store.meta();
+  m.gauntletRuns += 1;
+  m.gauntletPoints = Math.max(m.gauntletPoints, run.points);
+  m.lastSeen = run.fresh;                       // next run skips these
+  m.lastKiller = run.killer || null;
+  const record = run.depth > m.gauntletBest;
+  if (record) m.gauntletBest = run.depth;
+  store.save();
+
+  const houses = Object.entries(run.houses).filter(([, n]) => n > 0)
+    .map(([k, n]) => `${HOUSES[k].name} ${n}`).join(' · ');
+
+  view.innerHTML = `<div class="card">
+    <div class="tag"><b>Gauntlet</b> · ${exhausted ? 'questions exhausted' : record ? 'personal best' : 'run ended'}</div>
+    <div class="depth">${run.depth} <small style="font-size:.9rem;font-weight:500;color:var(--muted);letter-spacing:0">questions deep</small></div>
+    <div style="font-size:1.6rem;letter-spacing:.12em;margin-top:10px;color:var(--zinc)">${starGlyphs(run.depth)}</div>
+    <div class="sub" style="margin-top:4px">${starsFor(run.depth) === 5 ? 'Five stars. Nothing above this.' : `${nextStarAt(run.depth) - run.depth} more for ${starsFor(run.depth) + 1} stars`}</div>
+    <div class="statline">
+      <div>your best<b>${m.gauntletBest}</b></div>
+      <div>reached<b>${LEVEL_NAME[run.level]}</b></div>
+      <div>points<b>${run.points}</b></div>
+    </div>
+    ${houses ? `<p class="sub" style="margin-top:12px">${esc(houses)}</p>` : ''}
+    ${record && run.depth > 2 ? '<p class="sub" style="margin-top:10px">A personal best. Worth posting.</p>' : ''}
+    <button class="btn share" id="img">Share my card</button>
+    <button class="btn ghost" id="again">Run it again</button>
+    <button class="btn ghost" id="home">Back to houses</button>
+  </div>`;
+  document.getElementById('img').onclick = () => shareCard({
+    kicker: 'Gauntlet',
+    big: String(run.depth),
+    bigLabel: run.depth === 1 ? 'question deep' : 'questions deep',
+    stars: starsFor(run.depth),
+    lines: [`Reached ${LEVEL_NAME[run.level]} level`, houses || '', `${run.points} points`],
+    text: `Steel Quiz Gauntlet: ${run.depth} questions deep, ${starsFor(run.depth)} of 5 stars.`
+  });
+  document.getElementById('again').onclick = startGauntlet;
+  document.getElementById('home').onclick = renderHouses;
+}
+
+/* --------------------------------------------------------------- score card
+   Rendered on a canvas and handed to the OS share sheet, so it arrives in the
+   group as an image rather than a wall of text. */
+
+function drawStar(g, cx, cy, r, filled){
+  g.beginPath();
+  for (let i = 0; i < 10; i++){
+    const rad = i % 2 ? r * 0.45 : r;
+    const a = -Math.PI / 2 + i * Math.PI / 5;
+    g[i ? 'lineTo' : 'moveTo'](cx + rad * Math.cos(a), cy + rad * Math.sin(a));
+  }
+  g.closePath();
+  if (filled){ g.fillStyle = '#B8801F'; g.fill(); }
+  else { g.strokeStyle = '#C6CCC6'; g.lineWidth = 3; g.stroke(); }
+}
+
+async function shareCard({kicker, big, bigLabel, lines, text, stars}){
+  const S = 1000, c = document.createElement('canvas');
+  c.width = S; c.height = S;
+  const g = c.getContext('2d');
+  const F = '"IBM Plex Sans", -apple-system, Segoe UI, Roboto, sans-serif';
+
+  g.fillStyle = '#E4E8E4'; g.fillRect(0, 0, S, S);
+  g.fillStyle = '#15191A'; g.fillRect(0, 0, S, 170);
+  g.strokeStyle = 'rgba(255,255,255,.06)'; g.lineWidth = 1;
+  for (let x = 0; x < S; x += 7){ g.beginPath(); g.moveTo(x, 0); g.lineTo(x, 170); g.stroke(); }
+  g.fillStyle = '#F5F7F4'; g.font = `600 54px ${F}`; g.fillText('Steel Quiz', 70, 100);
+  g.fillStyle = '#A9B2AE'; g.font = `500 26px ${F}`; g.fillText(kicker, 70, 138);
+
+  g.fillStyle = '#3D6580'; g.fillRect(70, 250, 6, 150);
+  g.fillStyle = '#15191A'; g.font = `700 170px ${F}`; g.fillText(big, 110, 385);
+  g.fillStyle = '#5C6663'; g.font = `500 34px ${F}`; g.fillText(bigLabel, 112, 435);
+
+  let y = 545;
+  if (stars !== undefined){
+    for (let i = 0; i < 5; i++) drawStar(g, 96 + i * 78, 500, 32, i < stars);
+    y = 610;
+  }
+  g.font = `500 32px ${F}`;
+  for (const l of lines.filter(Boolean)){
+    g.fillStyle = '#15191A'; g.fillText(l, 70, y);
+    g.strokeStyle = '#C6CCC6'; g.beginPath(); g.moveTo(70, y + 22); g.lineTo(S - 70, y + 22); g.stroke();
+    y += 74;
+  }
+
+  g.fillStyle = '#5C6663'; g.font = `400 24px ${F}`;
+  g.fillText('\u00A9 Pundan K Singh \u00B7 IIT Madras Research Park', 70, S - 60);
+
+  const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+  const file = new File([blob], 'steel-quiz.png', {type: 'image/png'});
+
+  if (navigator.canShare && navigator.canShare({files: [file]})){
+    try { await navigator.share({files: [file], text}); return; }
+    catch (e) { if (e.name === 'AbortError') return; }      // user closed the sheet
+  }
+  const a = document.createElement('a');                     // fallback: save it
+  a.href = URL.createObjectURL(blob); a.download = 'steel-quiz.png'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 }
 
 function summary(cleared){
   const key = round.house, p = store.house(key), h = HOUSES[key];
   const clean = round.asked >= ROUND && round.right === round.asked;
   const msg = clean
-    ? `🏆 *${h.name} house cleared*\n\nTen out of ten in the ${h.name} house of the Steel Quiz. ${p.points} points, no mistakes. 🔩`
-    : `Steel Quiz, ${h.name}: ${p.points} points, ${p.correct} of ${p.answered} correct.`;
+    ? `🏆 *${h.name} house cleared*\n\nTen out of ten in the ${h.name} house of the Steel Quiz. ${p.points} points, no mistakes. 🔩\n\n${progressText()}`
+    : progressText();
 
   view.innerHTML = `<div class="card">
     <div class="tag"><b>${esc(h.name)}</b> · ${clean ? 'clean sweep' : cleared ? 'house cleared' : 'session paused'}</div>
     <div class="score">${p.points} <small>points in this house</small></div>
     <div class="statline">
       <div>correct<b>${p.correct} of ${p.answered}</b></div>
-      <div>level reached<b>${p.level === 2 ? 'hard' : 'easy'}</b></div>
+      <div>level reached<b>${LEVEL_NAME[p.reached || p.level]}</b></div>
       <div>best run<b>${p.best}</b></div>
     </div>
     ${clean ? '<p class="sub" style="margin-top:14px">Ten from ten. Worth telling the group about.</p>' : ''}
-    <a class="btn share" href="https://wa.me/?text=${encodeURIComponent(msg)}">Post this to the group</a>
+    <button class="btn share" id="img">Share my card</button>
+    <a class="btn ghost" href="https://wa.me/?text=${encodeURIComponent(msg)}">Post as text instead</a>
     <button class="btn ghost" id="again">Play this house again</button>
     <button class="btn ghost" id="home">Back to houses</button>
   </div>`;
+  document.getElementById('img').onclick = () => shareCard({
+    kicker: h.name + (clean ? ' · clean sweep' : ''),
+    big: String(p.points),
+    bigLabel: 'points in this house',
+    lines: [`${p.correct} of ${p.answered} correct`,
+            `Reached ${LEVEL_NAME[p.reached || p.level]} level`,
+            `Best run ${p.best} in a row`],
+    text: msg
+  });
   document.getElementById('again').onclick = () => start(key);
   document.getElementById('home').onclick = renderHouses;
 }
