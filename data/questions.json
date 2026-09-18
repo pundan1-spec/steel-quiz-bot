@@ -57,14 +57,14 @@
       "id": "FRM-L1-003",
       "house": "forming",
       "level": 1,
-      "question": "Which of these is NOT one of the three shapes springback takes?",
+      "question": "Which of these is a form of springback?",
       "options": {
-        "A": "Angular change",
-        "B": "Grain growth",
-        "C": "Sidewall curl"
+        "A": "Grain growth",
+        "B": "Sidewall curl",
+        "C": "Decarburisation"
       },
       "correct": "B",
-      "explanation": "Springback shows up as angular change, sidewall curl and twist. Grain growth is a thermal effect, not an elastic recovery one."
+      "explanation": "Springback appears as angular change, sidewall curl and twist. The other two are thermal effects, not elastic recovery."
     },
     {
       "id": "FRM-L1-004",
@@ -288,6 +288,156 @@
       "explanation": "Roughly 470 to 510 HV, alongside 950 to 1200 MPa yield and 1300 to 1700 MPa tensile strength."
     },
     {
+      "id": "FRM-L3-001",
+      "house": "forming",
+      "level": 3,
+      "type": "concept",
+      "source": "PHS · zinc coatings",
+      "question": "You have zinc-coated press hardening steel and a draw-heavy geometry. Which route?",
+      "options": {
+        "A": "Direct process",
+        "B": "Indirect process",
+        "C": "Cold stamp only"
+      },
+      "correct": "B",
+      "explanation": "Deforming the steel while zinc is liquid is the LME condition. The indirect route forms the shape cold, then heats and quenches it, so no deformation happens with liquid zinc present."
+    },
+    {
+      "id": "FRM-L3-002",
+      "house": "forming",
+      "level": 3,
+      "type": "concept",
+      "source": "PHS · tailored properties",
+      "question": "Why do soft zones need absorption masses rather than simply a cooler furnace?",
+      "options": {
+        "A": "They are cheaper",
+        "B": "They speed the cycle",
+        "C": "They act locally"
+      },
+      "correct": "C",
+      "explanation": "A cooler furnace lowers the whole blank. Absorption masses pull heat out of chosen areas only, holding them below 750 C while the rest fully austenitises."
+    },
+    {
+      "id": "FRM-L3-003",
+      "house": "forming",
+      "level": 3,
+      "type": "concept",
+      "source": "PHS · tailored properties",
+      "question": "A bumper beam needs a flange bent after press hardening. What do you specify?",
+      "options": {
+        "A": "Tailored tempering",
+        "B": "A thicker blank",
+        "C": "Slower quenching"
+      },
+      "correct": "A",
+      "explanation": "Harden the whole part, then locally soften where the secondary bend goes. The same trick eases hard trimming and improves cutting tool life."
+    },
+    {
+      "id": "FRM-L3-004",
+      "house": "forming",
+      "level": 3,
+      "type": "concept",
+      "source": "PHS · laser welded blanks",
+      "question": "Why can the weld line of a press hardened blank end up softer than either parent sheet?",
+      "options": {
+        "A": "Laser adds carbon",
+        "B": "Coating pools there",
+        "C": "No martensite there"
+      },
+      "correct": "C",
+      "explanation": "Weld quality or an inadequate local quench rate can leave the weld area untransformed, so the strongest-looking line in the part becomes the weakest."
+    },
+    {
+      "id": "FRM-L3-006",
+      "house": "forming",
+      "level": 3,
+      "type": "concept",
+      "source": "Joining · laser welded blanks",
+      "question": "Why does higher strength DP suffer worse HAZ softening in a welded blank?",
+      "options": {
+        "A": "More martensite",
+        "B": "Thinner gauge",
+        "C": "Lower carbon"
+      },
+      "correct": "A",
+      "explanation": "The heat affected zone tempers whatever martensite is there, so the grades with the most of it lose the most, exactly where the weld needs strength."
+    },
+    {
+      "id": "FRM-L3-007",
+      "house": "forming",
+      "level": 3,
+      "type": "concept",
+      "source": "Tailored products",
+      "question": "A part needs two thicknesses in one blank with no weld line anywhere. What do you use?",
+      "options": {
+        "A": "A patchwork blank",
+        "B": "Tailor rolled blank",
+        "C": "A laser welded blank"
+      },
+      "correct": "B",
+      "explanation": "Flexible rolling varies thickness along the strip continuously, so there is no weld and no abrupt transition to manage in forming or in crash."
+    },
+    {
+      "id": "FRM-L3-008",
+      "house": "forming",
+      "level": 3,
+      "type": "concept",
+      "source": "PHS · coatings",
+      "question": "Why must aluminium-silicon coated blanks be fully austenitised even when making a tailored part?",
+      "options": {
+        "A": "To relieve stress",
+        "B": "To burn off lube",
+        "C": "Coating must diffuse"
+      },
+      "correct": "C",
+      "explanation": "Partial heating leaves the coating incompletely diffused and non-uniform, so coating integrity, not steel properties, sets the minimum furnace condition."
+    },
+    {
+      "id": "FRM-L3-009",
+      "house": "forming",
+      "level": 3,
+      "type": "concept",
+      "source": "PHS · trimming",
+      "question": "Hard trimming a fully hardened part is destroying tools. Cheapest process fix?",
+      "options": {
+        "A": "Soften the trim line",
+        "B": "Trim before harden",
+        "C": "Slow the press"
+      },
+      "correct": "A",
+      "explanation": "A local soft zone along the cut line drops the force and energy needed and extends tool life, without changing the part's structural zones."
+    },
+    {
+      "id": "FRM-L3-010",
+      "house": "forming",
+      "level": 3,
+      "type": "concept",
+      "source": "Forming · press selection",
+      "question": "An embossment engages 3 inches off bottom dead centre and the press stalls. Why?",
+      "options": {
+        "A": "Tonnage is de-rated",
+        "B": "The die is cold",
+        "C": "Lubricant failed"
+      },
+      "correct": "A",
+      "explanation": "A press only delivers its rated tonnage near bottom dead centre. A 600 ton press may offer around 250 tons where that embossment actually forms."
+    },
+    {
+      "id": "FRM-L3-005",
+      "house": "forming",
+      "level": 3,
+      "type": "concept",
+      "source": "PHS · laser welded blanks",
+      "question": "Why does a PHS1500 blank welded to PQS outperform monolithic PHS1500 in impact?",
+      "options": {
+        "A": "It is thicker",
+        "B": "It has a soft half",
+        "C": "It quenches faster"
+      },
+      "correct": "B",
+      "explanation": "The softer press quenched half deforms instead of fracturing, so the part absorbs energy rather than shattering at full hardness."
+    },
+    {
       "id": "WLD-L1-001",
       "house": "welding",
       "level": 1,
@@ -431,32 +581,6 @@
       "explanation": "A small intermittent gap gives vaporised zinc a route out instead of trapping it in the melt. Too large and the top surface underfills."
     },
     {
-      "id": "WLD-L2-002",
-      "house": "welding",
-      "level": 2,
-      "question": "How much does the weld current range grow per extra 500 N of electrode force?",
-      "options": {
-        "A": "About 50 A",
-        "B": "About 500 A",
-        "C": "About 5 kA"
-      },
-      "correct": "B",
-      "explanation": "Around 500 A on average across AHSS from 600 to 1400 MPa. It is the cheapest way to buy back process window."
-    },
-    {
-      "id": "WLD-L2-003",
-      "house": "welding",
-      "level": 2,
-      "question": "How much does the weld current range grow per extra 40 ms of weld time?",
-      "options": {
-        "A": "About 2 kA",
-        "B": "About 25 A",
-        "C": "About 250 A"
-      },
-      "correct": "C",
-      "explanation": "Around 250 A. Weld time and electrode force are the two levers that widen an AHSS weld lobe."
-    },
-    {
       "id": "WLD-L2-004",
       "house": "welding",
       "level": 2,
@@ -546,6 +670,186 @@
       },
       "correct": "A",
       "explanation": "It leaves liquid zinc on the surface and lets thermal stress build after the caps lift. Hold time alone can decide cracked versus crack-free."
+    },
+    {
+      "id": "WLD-L2-002",
+      "house": "welding",
+      "level": 2,
+      "type": "concept",
+      "source": "Joining · RSW process window",
+      "question": "Why is expulsion treated as the upper bound of the weld current range?",
+      "options": {
+        "A": "Metal is ejected",
+        "B": "The timer resets",
+        "C": "The coating burns"
+      },
+      "correct": "A",
+      "explanation": "Molten metal is ejected from the nugget, so beyond that current the weld loses material and consistency rather than gaining size."
+    },
+    {
+      "id": "WLD-L2-003",
+      "house": "welding",
+      "level": 2,
+      "type": "concept",
+      "source": "Joining · RSW process window",
+      "question": "Why does a wider weld current range matter on the line?",
+      "options": {
+        "A": "It cuts cycle time",
+        "B": "It absorbs variation",
+        "C": "It saves electricity"
+      },
+      "correct": "B",
+      "explanation": "Tip wear, fit-up scatter and coating variation all shift the working point. A narrow window turns any of them into bad welds."
+    },
+    {
+      "id": "WLD-L3-001",
+      "house": "welding",
+      "level": 3,
+      "type": "spec",
+      "source": "Joining · stack-ups",
+      "question": "In a three-sheet stack-up, thickness ratio is defined as:",
+      "options": {
+        "A": "Thickest over thin",
+        "B": "Total over thinnest",
+        "C": "Top over bottom"
+      },
+      "correct": "B",
+      "explanation": "Total stack thickness divided by the thinnest sheet. It is the single number that predicts how awkward the joint will be."
+    },
+    {
+      "id": "WLD-L3-002",
+      "house": "welding",
+      "level": 3,
+      "type": "concept",
+      "source": "Joining · stack-ups",
+      "question": "Thickness ratio is above five and the thin sheet will not fuse without expulsion. What do you change?",
+      "options": {
+        "A": "Two-pulse schedule",
+        "B": "Raise the current",
+        "C": "Weld twice"
+      },
+      "correct": "A",
+      "explanation": "A short first pulse forms the nugget at the thin interface before electrode cooling dominates, then a longer low-current pulse grows the rest into it."
+    },
+    {
+      "id": "WLD-L3-003",
+      "house": "welding",
+      "level": 3,
+      "type": "concept",
+      "source": "Joining · RSW",
+      "question": "Why does heat drain faster on the thin sheet side of a stack-up?",
+      "options": {
+        "A": "Thin steel resists",
+        "B": "Thinner coating",
+        "C": "Electrode is closer"
+      },
+      "correct": "C",
+      "explanation": "The water-cooled electrode sits nearer the faying surface, so it pulls heat out before a nugget can establish there."
+    },
+    {
+      "id": "WLD-L3-005",
+      "house": "welding",
+      "level": 3,
+      "type": "concept",
+      "source": "Joining · weld bonding",
+      "question": "Why does structural adhesive at the faying surface enlarge the nugget?",
+      "options": {
+        "A": "It raises resistance",
+        "B": "It insulates the tip",
+        "C": "It lowers the force"
+      },
+      "correct": "A",
+      "explanation": "The adhesive raises static contact resistance, so heating starts earlier and the nugget grows larger for identical welding parameters."
+    },
+    {
+      "id": "WLD-L3-006",
+      "house": "welding",
+      "level": 3,
+      "type": "concept",
+      "source": "Joining · LME",
+      "question": "Spot welds on zinc-coated AHSS show cracks at the electrode indentation. First parameter to change?",
+      "options": {
+        "A": "Electrode hold time",
+        "B": "Squeeze pressure",
+        "C": "Cooling water flow"
+      },
+      "correct": "A",
+      "explanation": "Lifting the caps while zinc is still liquid and the joint is under thermal stress is the classic LME trigger. Hold time alone often decides cracked or clean."
+    },
+    {
+      "id": "WLD-L3-007",
+      "house": "welding",
+      "level": 3,
+      "type": "concept",
+      "source": "Joining · dissimilar materials",
+      "question": "Why insert stainless steel between aluminium and AHSS in a spot weld?",
+      "options": {
+        "A": "Corrosion life",
+        "B": "To cut the current",
+        "C": "Limit intermetallics"
+      },
+      "correct": "C",
+      "explanation": "The brittle iron-aluminium intermetallic layer is what limits these joints. The insert keeps steel and aluminium from forming it directly."
+    },
+    {
+      "id": "WLD-L3-008",
+      "house": "welding",
+      "level": 3,
+      "type": "concept",
+      "source": "Joining · dissimilar materials",
+      "question": "Aluminium-to-AHSS joints failed interfacially at 3T but pulled buttons at 2T. What does that tell you?",
+      "options": {
+        "A": "Interface is weakest",
+        "B": "Steel was too soft",
+        "C": "Current was too low"
+      },
+      "correct": "A",
+      "explanation": "Interfacial failure means the joint plane gave way before the surrounding metal, so the intermetallic and residual stress at that interface governed, not sheet strength."
+    },
+    {
+      "id": "WLD-L3-009",
+      "house": "welding",
+      "level": 3,
+      "type": "spec",
+      "source": "Joining · weld quality",
+      "question": "Which specification governs automotive resistance spot weld quality?",
+      "options": {
+        "A": "ISO 16630",
+        "B": "EN 10359",
+        "C": "AWS D8.1M"
+      },
+      "correct": "C",
+      "explanation": "AWS D8.1M, the source of the minimum nugget diameters used to judge complex stack-ups."
+    },
+    {
+      "id": "WLD-L3-010",
+      "house": "welding",
+      "level": 3,
+      "type": "concept",
+      "source": "Joining · PHS",
+      "question": "Why does hot press steel need more electrode force than cold press steel of the same thickness?",
+      "options": {
+        "A": "Less force needed",
+        "B": "More force needed",
+        "C": "Force is irrelevant"
+      },
+      "correct": "B",
+      "explanation": "Strength and springback make intimate contact harder to establish, and it scales with grade, which can outrun what the existing weld gun was sized to deliver."
+    },
+    {
+      "id": "WLD-L3-004",
+      "house": "welding",
+      "level": 3,
+      "type": "concept",
+      "source": "Joining · 3T stack-ups",
+      "question": "In a 3T stack-up, what sets the upper limit on how much current you can add?",
+      "options": {
+        "A": "Expulsion risk",
+        "B": "Electrode melting",
+        "C": "Transformer rating"
+      },
+      "correct": "A",
+      "explanation": "Penetration into the thin sheet saturates while the thick interface keeps heating, so past a point more current only buys expulsion."
     },
     {
       "id": "COA-L1-001",
@@ -808,6 +1112,156 @@
       "explanation": "Coating pickup on the rollers drives up furnace maintenance cost, and the coating is abrasive on tooling as well."
     },
     {
+      "id": "COA-L3-001",
+      "house": "coating",
+      "level": 3,
+      "type": "spec",
+      "source": "Forming · delayed cracking",
+      "question": "Which of these introduces diffusible hydrogen into the steel?",
+      "options": {
+        "A": "Phosphate coating",
+        "B": "Roller levelling",
+        "C": "Shot blasting"
+      },
+      "correct": "A",
+      "explanation": "Electrochemical steps do it: pickling, electrogalvanizing, phosphating and e-coating. Lubricant breakdown and furnace atmospheres are the other two routes in."
+    },
+    {
+      "id": "COA-L3-002",
+      "house": "coating",
+      "level": 3,
+      "type": "concept",
+      "source": "PHS · coatings",
+      "question": "Why does zinc-coated PHS need pre-cooling after the furnace when aluminium-silicon does not?",
+      "options": {
+        "A": "Zinc melts far lower",
+        "B": "Zinc is thinner",
+        "C": "Aluminium is softer"
+      },
+      "correct": "A",
+      "explanation": "Zinc is liquid at austenitising temperature and aluminium is not, so the zinc has to be solidified before the steel is deformed."
+    },
+    {
+      "id": "COA-L3-003",
+      "house": "coating",
+      "level": 3,
+      "type": "concept",
+      "source": "Forming · delayed cracking",
+      "question": "Why are TRIP steels a particular hydrogen risk?",
+      "options": {
+        "A": "Cannot be coated",
+        "B": "Zinc reacts with it",
+        "C": "Austenite holds H"
+      },
+      "correct": "C",
+      "explanation": "Retained austenite dissolves far more hydrogen than ferrite. When it transforms under strain, the result is hydrogen-rich martensite, the worst pairing there is."
+    },
+    {
+      "id": "COA-L3-004",
+      "house": "coating",
+      "level": 3,
+      "type": "concept",
+      "source": "Forming · delayed cracking",
+      "question": "A 1500 MPa part cracks days after e-coat with no load change. First suspect?",
+      "options": {
+        "A": "Hydrogen uptake",
+        "B": "Paint shrinkage",
+        "C": "Thermal fatigue"
+      },
+      "correct": "A",
+      "explanation": "Delay is the signature. Electrochemical pretreatment and e-coat introduce hydrogen, which then diffuses to the highest triaxial stress and cracks it there."
+    },
+    {
+      "id": "COA-L3-005",
+      "house": "coating",
+      "level": 3,
+      "type": "spec",
+      "source": "PHS · coatings",
+      "question": "Aluminium-silicon coated blanks can arrive with higher diffusible hydrogen because aluminizing runs at:",
+      "options": {
+        "A": "120 C",
+        "B": "680 C",
+        "C": "1400 C"
+      },
+      "correct": "B",
+      "explanation": "680 C, hot enough for pickup during coating, which matters because hydrogen induced cracking is a known problem above 1500 MPa."
+    },
+    {
+      "id": "COA-L3-006",
+      "house": "coating",
+      "level": 3,
+      "type": "concept",
+      "source": "Coatings · corrosion",
+      "question": "Aluminium-based coatings give no cathodic protection. So how do they protect?",
+      "options": {
+        "A": "By oxide barrier",
+        "B": "By sacrificing",
+        "C": "By sealing pores"
+      },
+      "correct": "A",
+      "explanation": "A stable surface oxide keeps the environment away from the steel. Break through it at a scratch and, unlike zinc, nothing sacrifices itself to cover the gap."
+    },
+    {
+      "id": "COA-L3-007",
+      "house": "coating",
+      "level": 3,
+      "type": "concept",
+      "source": "Coatings · forming",
+      "question": "Why does galvanneal powder through a draw bead when free zinc does not?",
+      "options": {
+        "A": "It is thicker",
+        "B": "Hard and brittle",
+        "C": "It is wetter"
+      },
+      "correct": "B",
+      "explanation": "The iron-zinc alloy phases are hard and brittle, so they fracture and shed under the contact pressure a bead imposes. That is why GA is run lighter."
+    },
+    {
+      "id": "COA-L3-008",
+      "house": "coating",
+      "level": 3,
+      "type": "concept",
+      "source": "PHS · uncoated blanks",
+      "question": "Scale on an uncoated blank threatens the part mainly because it:",
+      "options": {
+        "A": "Adds weight",
+        "B": "Attracts hydrogen",
+        "C": "Blocks heat transfer"
+      },
+      "correct": "C",
+      "explanation": "Scale insulates the part from the quench tool, so the zone under it may never reach the critical cooling rate and never becomes martensite."
+    },
+    {
+      "id": "COA-L3-009",
+      "house": "coating",
+      "level": 3,
+      "type": "concept",
+      "source": "PHS · process selection",
+      "question": "A dry-area press hardened part, cost sensitive, no corrosion duty. Which blank?",
+      "options": {
+        "A": "Uncoated",
+        "B": "Zinc coated",
+        "C": "Electrogalvanized"
+      },
+      "correct": "A",
+      "explanation": "About 40 percent of press hardened parts sit in dry areas, where an uncoated blank plus shot blasting beats paying for coating and its process constraints."
+    },
+    {
+      "id": "COA-L3-010",
+      "house": "coating",
+      "level": 3,
+      "type": "concept",
+      "source": "Coatings · galvanneal",
+      "question": "Galvanneal weldability comes from its iron content. What does that same iron cost you?",
+      "options": {
+        "A": "Corrosion life",
+        "B": "Forming behaviour",
+        "C": "Paint adhesion"
+      },
+      "correct": "B",
+      "explanation": "The hard alloy phases powder against tooling and drive friction higher than either GI or EG, so the weld shop's gain is the press shop's problem."
+    },
+    {
       "id": "VEH-L1-001",
       "house": "vehicle",
       "level": 1,
@@ -1068,6 +1522,158 @@
       "explanation": "The rocker is the last structure between a pole and the battery, so it has to stop intrusion in a very short crush distance rather than simply absorb energy."
     },
     {
+      "id": "VEH-L3-001",
+      "house": "vehicle",
+      "level": 3,
+      "type": "spec",
+      "source": "Crash protocols · Euro NCAP",
+      "question": "Euro NCAP propels the car sideways into a rigid pole at what speed?",
+      "options": {
+        "A": "32 kmph",
+        "B": "50 kmph",
+        "C": "64 kmph"
+      },
+      "correct": "A",
+      "explanation": "32 kmph, all of it concentrated on a narrow pole aligned with the occupant, which is what drives rocker section and curtain airbag design.",
+      "review": "Euro NCAP protocol, verify against the current edition"
+    },
+    {
+      "id": "VEH-L3-002",
+      "house": "vehicle",
+      "level": 3,
+      "type": "concept",
+      "source": "Crash · structure",
+      "question": "Why is the small overlap test so much harder on structure than a full frontal?",
+      "options": {
+        "A": "It is much faster",
+        "B": "It misses the rails",
+        "C": "It uses no airbags"
+      },
+      "correct": "B",
+      "explanation": "The impact lands outboard of the longitudinal rails, so the primary load path is largely bypassed and the wheel is driven back into the toe pan."
+    },
+    {
+      "id": "VEH-L3-003",
+      "house": "vehicle",
+      "level": 3,
+      "type": "concept",
+      "source": "Crash protocols · compatibility",
+      "question": "Why does the mobile progressive deformable barrier test also score damage to the trolley?",
+      "options": {
+        "A": "To check the barrier",
+        "B": "To measure speed",
+        "C": "Penalise stiffness"
+      },
+      "correct": "C",
+      "explanation": "Protecting your own occupants by building an unyielding front end transfers the harm to the other vehicle. Scoring the trolley makes that trade visible."
+    },
+    {
+      "id": "VEH-L3-004",
+      "house": "vehicle",
+      "level": 3,
+      "type": "spec",
+      "source": "Crash protocols · IIHS",
+      "question": "The IIHS small overlap test uses what overlap and speed?",
+      "options": {
+        "A": "25 percent, 64 kmph",
+        "B": "50 percent, 40 kmph",
+        "C": "100 percent, 80 kmph"
+      },
+      "correct": "A",
+      "explanation": "25 percent of vehicle width into a rigid barrier at 64 kmph, representing a tree or pole strike outboard of the structure built to absorb it.",
+      "review": "IIHS protocol, verify against the current edition"
+    },
+    {
+      "id": "VEH-L3-005",
+      "house": "vehicle",
+      "level": 3,
+      "type": "concept",
+      "source": "Crash · BEV structure",
+      "question": "Why is a BEV rocker designed for intrusion resistance rather than energy absorption?",
+      "options": {
+        "A": "Crush space is tiny",
+        "B": "Rockers never deform",
+        "C": "Cells absorb energy"
+      },
+      "correct": "A",
+      "explanation": "There are only millimetres between the outer skin and the cells, so the section must stop the intruder rather than fold progressively against it."
+    },
+    {
+      "id": "VEH-L3-006",
+      "house": "vehicle",
+      "level": 3,
+      "type": "concept",
+      "source": "Crash protocols · far side",
+      "question": "Euro NCAP accepts only physical sled tests for far-side occupant protection. Why does that matter?",
+      "options": {
+        "A": "CAE is not accepted",
+        "B": "Sleds are cheaper",
+        "C": "It needs no dummy"
+      },
+      "correct": "A",
+      "explanation": "Simulation cannot be substituted for the evidence, so the countermeasure has to be demonstrated in hardware rather than argued for in a model."
+    },
+    {
+      "id": "VEH-L3-007",
+      "house": "vehicle",
+      "level": 3,
+      "type": "concept",
+      "source": "Crash · structure",
+      "question": "A front rail folds sideways instead of crushing axially in test. What is the design fix?",
+      "options": {
+        "A": "Thicken the rail",
+        "B": "Add crush initiators",
+        "C": "Raise yield strength"
+      },
+      "correct": "B",
+      "explanation": "Trigger features set where each fold starts, so the rail collapses progressively. Simply making it stronger usually pushes the buckle somewhere worse."
+    },
+    {
+      "id": "VEH-L3-009",
+      "house": "vehicle",
+      "level": 3,
+      "type": "concept",
+      "source": "Crash · PHS design",
+      "question": "Why is the lower section of a press hardened B-pillar deliberately left softer?",
+      "options": {
+        "A": "To ease welding",
+        "B": "To absorb energy low",
+        "C": "To save coating"
+      },
+      "correct": "B",
+      "explanation": "The soft lower zone deforms and absorbs while the hard upper section resists intrusion, putting ductility only where the crash needs it."
+    },
+    {
+      "id": "VEH-L3-010",
+      "house": "vehicle",
+      "level": 3,
+      "type": "concept",
+      "source": "Crash protocols · ratings",
+      "question": "Why did IIHS begin running small overlap on the passenger side as well?",
+      "options": {
+        "A": "Dummies differ",
+        "B": "Sides scored apart",
+        "C": "To halve testing"
+      },
+      "correct": "B",
+      "explanation": "Vehicles rated Good on the driver side ranged from Good to Poor on the passenger side, because structural reinforcement had followed the test, not the physics."
+    },
+    {
+      "id": "VEH-L3-008",
+      "house": "vehicle",
+      "level": 3,
+      "type": "concept",
+      "source": "Crash · joining",
+      "question": "In top-hat crash box tests, why was adhesive alone unsuitable?",
+      "options": {
+        "A": "It burned off",
+        "B": "It cured too slowly",
+        "C": "It peeled open"
+      },
+      "correct": "C",
+      "explanation": "The bond line peeled progressively along the joint during crush, so the section unzipped instead of folding. Spot welds held the flanges together."
+    },
+    {
       "id": "FUN-L1-001",
       "house": "fun",
       "level": 1,
@@ -1326,6 +1932,156 @@
       },
       "correct": "C",
       "explanation": "Bainite. Accelerated cooling on the hot mill run-out table is how ferrite-bainite grades are produced for edge-critical parts."
+    },
+    {
+      "id": "FUN-L3-001",
+      "house": "fun",
+      "level": 3,
+      "type": "spec",
+      "source": "Standards · formability",
+      "question": "VDA 238-100 is the standard for which test?",
+      "options": {
+        "A": "Tensile",
+        "B": "Hole expansion",
+        "C": "Bending"
+      },
+      "correct": "C",
+      "explanation": "The plate bending test. With ISO 16630 for hole expansion, it is one of the few standardised measures of local formability."
+    },
+    {
+      "id": "FUN-L3-002",
+      "house": "fun",
+      "level": 3,
+      "type": "spec",
+      "source": "Standards · blanks",
+      "question": "EN 10359 is the European standard covering:",
+      "options": {
+        "A": "Laser welded blanks",
+        "B": "Zinc coatings",
+        "C": "Spot weld quality"
+      },
+      "correct": "A",
+      "explanation": "Laser welded tailored blanks. Before 2023 its scope was narrower than the range of blanks the industry was already producing."
+    },
+    {
+      "id": "FUN-L3-003",
+      "house": "fun",
+      "level": 3,
+      "type": "spec",
+      "source": "Standards · hydrogen",
+      "question": "SEP 1970 is a test standard for what?",
+      "options": {
+        "A": "Fatigue life",
+        "B": "Hydrogen fracture",
+        "C": "Paint adhesion"
+      },
+      "correct": "B",
+      "explanation": "Resistance of AHSS to production-related hydrogen induced brittle fracture, using a punched-hole specimen held under constant tensile stress."
+    },
+    {
+      "id": "FUN-L3-004",
+      "house": "fun",
+      "level": 3,
+      "type": "spec",
+      "source": "Grades · designation",
+      "question": "In the designation 22MnB5, what does the 22 indicate?",
+      "options": {
+        "A": "0.22 percent carbon",
+        "B": "22 percent manganese",
+        "C": "2.2 mm thickness"
+      },
+      "correct": "A",
+      "explanation": "Roughly 0.22 percent carbon, with manganese and boron named as the alloying elements. The boron is what buys the hardenability."
+    },
+    {
+      "id": "FUN-L3-005",
+      "house": "fun",
+      "level": 3,
+      "type": "spec",
+      "source": "Grades · designation",
+      "question": "In press hardened blanks, PQS stands for:",
+      "options": {
+        "A": "Partial quality",
+        "B": "Pre-quenched section",
+        "C": "Press quenched steel"
+      },
+      "correct": "C",
+      "explanation": "Press quenched steel, grades such as PQS 450 and 550, welded to PHS1500 to give a blank with a deliberately softer half."
+    },
+    {
+      "id": "FUN-L3-006",
+      "house": "fun",
+      "level": 3,
+      "type": "spec",
+      "source": "Programmes · ULSAB-AVC",
+      "question": "ULSAB-AVC targeted what fuel consumption?",
+      "options": {
+        "A": "12 to 15 L/100km",
+        "B": "3.2 to 4.5 L/100km",
+        "C": "0.5 L/100km"
+      },
+      "correct": "B",
+      "explanation": "3.2 to 4.5 litres per 100 km, or 52 to 73 miles per gallon, from a body that also met the safety targets of its day."
+    },
+    {
+      "id": "FUN-L3-007",
+      "house": "fun",
+      "level": 3,
+      "type": "spec",
+      "source": "Programmes · ULSAB-AVC",
+      "question": "What manufacturing cost did ULSAB-AVC target?",
+      "options": {
+        "A": "1,000 USD",
+        "B": "45,000 USD",
+        "C": "9,200 to 10,200 USD"
+      },
+      "correct": "C",
+      "explanation": "9,200 to 10,200 US dollars. Costing the concept, not only weighing it, is what separated these programmes from styling exercises."
+    },
+    {
+      "id": "FUN-L3-008",
+      "house": "fun",
+      "level": 3,
+      "type": "spec",
+      "source": "Joining · hydrogen",
+      "question": "A small risk of hydrogen embrittlement after welding is noted above roughly what strength?",
+      "options": {
+        "A": "270 MPa",
+        "B": "980 MPa",
+        "C": "2000 MPa"
+      },
+      "correct": "B",
+      "explanation": "From about 980 MPa upward the risk exists, managed through joining practice rather than avoided by grade choice alone."
+    },
+    {
+      "id": "FUN-L3-009",
+      "house": "fun",
+      "level": 3,
+      "type": "spec",
+      "source": "Grades · designation",
+      "question": "JAC270 and JSC980 are designations from which standards system?",
+      "options": {
+        "A": "Japanese",
+        "B": "Brazilian",
+        "C": "Russian"
+      },
+      "correct": "A",
+      "explanation": "Japanese. JAC270 is a galvannealed mild steel and JSC980 a bare cold rolled dual phase steel, both common in stack-up studies."
+    },
+    {
+      "id": "FUN-L3-010",
+      "house": "fun",
+      "level": 3,
+      "type": "spec",
+      "source": "Programmes · Steel E-Motive",
+      "question": "How long did the Steel E-Motive programme run?",
+      "options": {
+        "A": "Three months",
+        "B": "Twenty years",
+        "C": "Three years"
+      },
+      "correct": "C",
+      "explanation": "Three years of engineering design, testing and development before the concepts and their documentation were published."
     }
   ]
 }
